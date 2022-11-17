@@ -1,0 +1,96 @@
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <title></title>
+    <script type="text/javascript" src="lib/jquery.min.js"></script>
+    <script src="lib/face.js"></script>
+    <script src="lib/ccv.js"></script>
+<script type="text/javascript">
+
+    // キャンバス
+    var src_canvas;
+    var src_ctx;
+
+    // イメージ
+    var image;
+
+    window.onload = function () {
+        src_canvas = document.getElementById("SrcCanvas");
+        src_ctx = src_canvas.getContext("2d");
+
+        image = document.getElementById("image_source");
+    }
+
+    // ユーザーによりファイルが追加された  
+    function onAddFile(event) {
+        var files;
+        var reader = new FileReader();
+
+        if (event.target.files) {
+            files = event.target.files;
+        } else {
+            files = event.dataTransfer.files;
+        }
+
+        // ファイルが読み込まれた
+        reader.onload = function (event) {
+            // イメージが読み込まれた
+            image.onload = function () {
+
+                src_canvas.width = image.width;
+                src_canvas.height = image.height;
+                src_ctx.drawImage(image, 0, 0);
+
+                console.time('処理');
+
+                // 顔検出
+                var comp = ccv.detect_objects({
+                    "canvas": ccv.grayscale(ccv.pre(image)),
+                    "cascade": cascade,
+                    "interval": 5,
+                    "min_neighbors": 1
+                });
+
+                // 結果の表示
+                src_ctx.drawImage(image, 0, 0);
+                src_ctx.lineWidth = 2;
+                src_ctx.strokeStyle = "#ff0000";
+
+                for (var i = 0; i < comp.length; i++) {
+                    src_ctx.strokeRect(comp[i].x, comp[i].y, comp[i].width, comp[i].height);
+                }
+
+                if (comp.length === 0) {
+                    console.log('顔を検出できませんでした。');
+                }
+
+                console.timeEnd('処理');
+            };
+
+            // イメージが読み込めない
+            image.onerror = function () {
+                alert('このファイルは読み込めません。');
+            };
+
+            image.src = reader.result;
+        };
+
+        if (files[0]) {
+            reader.readAsDataURL(files[0]);
+        }
+    }      
+
+</script>
+    
+</head>
+
+<body>
+    <img id="image_source">
+    <p></p>
+    <input type="file" id="inputfile" accept="image/jpeg,image/png,image/gif,image/bmp" onchange="onAddFile(event);">
+    <p></p>
+    <canvas id="SrcCanvas"></canvas>
+</body>
+
+</html>
