@@ -2,7 +2,7 @@
 
 
 
-const FILE_URL = "./photos/0010171846705174-web.jpg";
+const FILE_URL = "./photos/faces.jpeg";
 const MODEL_URL = "./weights";
 
 let img, canvas, context;
