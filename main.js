@@ -31,7 +31,7 @@ async function detectAllFaces() {
     console.log("detectAllFaces");
 
     // 1, 画像の読み込み
-    img = await faceapi.fetchImage("photos/0010171846705174-web.jpg");
+    img = await faceapi.fetchImage("./photos/faces.jpeg");
 
     // 2, HTMLからキャンバスを取得し画像を描画
     canvas = document.getElementById("myCanvas");
