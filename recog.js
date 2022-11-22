@@ -1,6 +1,6 @@
 
 
-const FILE_URL = "./photos/faces.jpeg";
+const FILE_URL = "./photos";
 const MODEL_URL = "./weights";
 
 (async () => {
@@ -10,7 +10,7 @@ const MODEL_URL = "./weights";
     await faceapi.nets.faceLandmark68Net.loadFromUri(MODEL_URL);
 
     // Detect Face
-    const input = document.getElementById(FILE_URL);
+    const input = document.getElementById("myImg");
     const result = await faceapi
         .detectSingleFace(input, new faceapi.SsdMobilenetv1Options())
         .withFaceLandmarks()
@@ -30,38 +30,38 @@ const MODEL_URL = "./weights";
         const box = resizedDetections.detection.box;
         const drawBox = new faceapi.draw.DrawBox(box, { label: bestMatch.label });
         drawBox.draw(canvas);
+        console.log(result)
     }
 })();
 
 // detect for one people
 async function detectFace() {
-    const label = "Huu";
+    const label = "Ohtani";
     const numberImage = 5;
     const descriptions = [];
-    // for (let i = 1; i <= numberImage; i++) {
+    for (let i = 1; i <= numberImage; i++) {
         const img = await faceapi.fetchImage(
-            // `/data/Huu/${i}.jpg`
-            "./photos/faces.jpeg"
+            `./datas/Ohtani/${i}.jpeg`
         );
         const detection = await faceapi
             .detectSingleFace(img)
             .withFaceLandmarks()
             .withFaceDescriptor();
         descriptions.push(detection.descriptor);
-    // }
+    }
     return new faceapi.LabeledFaceDescriptors(label, descriptions);
 }
 
 
 // detect for more people
 async function detectAllLabeledFaces() {
-    const labels = ["An Nhien", "Huu"];
+    const labels = ["Ohtani", "Elon"];
     return Promise.all(
         labels.map(async label => {
             const descriptions = [];
             for (let i = 1; i <= 2; i++) {
                 const img = await faceapi.fetchImage(
-                    // `/data/${label}/${i}.jpg`
+                    `./datas/${label}/${i}.jpeg`
                     
                 );
                 const detection = await faceapi
