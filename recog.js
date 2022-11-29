@@ -1,5 +1,4 @@
-
-function usepics() {
+function usepics(num) {
     const FILE_URL = "./photos";
     const MODEL_URL = "./weights";
 
@@ -10,7 +9,7 @@ function usepics() {
         await faceapi.nets.faceLandmark68Net.loadFromUri(MODEL_URL);
 
         // Detect Face
-        const input = document.getElementById("myImg");
+        const input = document.getElementById(`myImg${num}`);
         const result = await faceapi
             .detectSingleFace(input, new faceapi.SsdMobilenetv1Options())
             .withFaceLandmarks()
@@ -23,7 +22,7 @@ function usepics() {
         console.log(resizedDetections);
 
         // Recognize Face
-        const labeledFaceDescriptors = await detectFace();
+        const labeledFaceDescriptors = await detectAllLabeledFaces();
         const faceMatcher = new faceapi.FaceMatcher(labeledFaceDescriptors, 0.7);
         if (result) {
             const bestMatch = faceMatcher.findBestMatch(result.descriptor);
@@ -59,11 +58,15 @@ function usepics() {
         return Promise.all(
             labels.map(async label => {
                 const descriptions = [];
+
+
                 for (let i = 1; i <= 2; i++) {
                     const img = await faceapi.fetchImage(
                         `./datas/${label}/${i}.jpeg`
                     
                     );
+
+
                     const detection = await faceapi
                         .detectSingleFace(img)
                         .withFaceLandmarks()

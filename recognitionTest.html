@@ -12,12 +12,25 @@
     <script>
 
         function loadImage(target) {
-            var reader = new FileReader();
-            reader.onload = function (e) {
-                document.getElementById("myImg").setAttribute('src', e.target.result);
+            var fileList = target.files;
+            var fileCount = fileList.length;
+            for (var ig = 0; ig < fileCount; ig++) {
+
+                var reader = new FileReader(); //ここはのこす
+                reader.onload = (function (e) { //ここはのこす
+                    
+                    document.getElementById("image").innerHTML += `<img id = 'myImg${ig}' src = '${e.target.result}'>` 
+                    // document.getElementById(`myImg${i}`).setAttribute('src', e.target.result); //ここはのこす
+                    console.log(e)
+                    console.log(ig)
+
+                });
+                reader.readAsDataURL(target.files[ig]); //ここはのこす
+
+
+                console.log("last is" + ig)
+                // usepics(ig); //ここはのこす
             }
-            reader.readAsDataURL(target.files[0]);
-            usepics();
         };
 
     </script>
@@ -31,13 +44,13 @@
 
 
         <input type="file" id="inputImg" accept=".jpeg,.png,.JPEG,.PNG" onchange="loadImage(this)"
-            onclick="this.value = '';"><br>
+            onclick="this.value = '';" multiple="multiple"><br>
 
         <hr>
     </span>
     <div id="images">
         <div id="image">
-            <img id="myImg" src="">
+            <!-- <img id="myImg" src=""> -->
         </div>
         <div id="canvas">
             <canvas id="myCanvas"></canvas>
