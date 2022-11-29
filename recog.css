@@ -1,0 +1,18 @@
+#images {
+    position: relative;
+}
+
+#image {
+    position: absolute;
+}
+
+#canvas {
+    position: absolute;
+
+}
+
+body {
+    margin: 0;
+    padding: 0;
+}
+

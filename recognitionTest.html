@@ -3,28 +3,46 @@
 
 <head>
     <meta charset="UTF-8">
-    <style type="text/css">
-        body {
-            margin: 0;
-            padding: 0;
-        }
-        canvas {
-            position: absolute;
-            top: 0;
-            left: 0;
-        }
-
-    </style>
+    <link rel="stylesheet" href="recog.css">
     <script type="text/javascript" src="lib/face-api.js"></script>
+    <script type="text/javascript" src="lib/jquery.min.js"></script>
     <script src="recog.js"></script>
+
+    <!-- <script src="recog.js"></script> -->
     <script>
 
+        function loadImage(target) {
+            var reader = new FileReader();
+            reader.onload = function (e) {
+                document.getElementById("myImg").setAttribute('src', e.target.result);
+            }
+            reader.readAsDataURL(target.files[0]);
+            usepics();
+        };
+
     </script>
+
 </head>
 
 <body>
-    <img id="myImg" src="./photos/Elon.jpeg" width="90%" height="60%" />
-    <canvas id="myCanvas">
+    <span id="main" style="display:absolute">
+        <h1>画像読み込み</h1>
+        <!-- <img id="myImg" src="./photos/Elon.jpeg" width="90%" height="60%" /> --><br>
+
+
+        <input type="file" id="inputImg" accept=".jpeg,.png,.JPEG,.PNG" onchange="loadImage(this)"
+            onclick="this.value = '';"><br>
+
+        <hr>
+    </span>
+    <div id="images">
+        <div id="image">
+            <img id="myImg" src="" style="position:relative">
+        </div>
+        <div id="canvas">
+            <canvas id="myCanvas"></canvas>
+        </div>
+    </div>
 </body>
 
 </html>
