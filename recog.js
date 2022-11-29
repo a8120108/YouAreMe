@@ -24,7 +24,7 @@ const MODEL_URL = "./weights";
 
     // Recognize Face
     const labeledFaceDescriptors = await detectFace();
-    const faceMatcher = new faceapi.FaceMatcher(labeledFaceDescriptors, 0.7); //一定の数値以上の値であれば同一人物とみなす
+    const faceMatcher = new faceapi.FaceMatcher(labeledFaceDescriptors, 0.7);
     if (result) {
         const bestMatch = faceMatcher.findBestMatch(result.descriptor);
         const box = resizedDetections.detection.box;
@@ -36,21 +36,18 @@ const MODEL_URL = "./weights";
 
 // detect for one people
 async function detectFace() {
-    const label = ["Ohtani", "Elon"];
+    const label = "Ohtani";
     const numberImage = 5;
     const descriptions = [];
-    for (var h = 0; h < label.length; h++) {
-        for (let i = 1; i <= numberImage; i++) {
-            console.log(`./datas/${label[h]}/${i}.jpeg`)
-            const img = await faceapi.fetchImage(
-                `./datas/${label[h]}/${i}.jpeg`
-            );
-            const detection = await faceapi
-                .detectSingleFace(img)
-                .withFaceLandmarks()
-                .withFaceDescriptor();
-            descriptions.push(detection.descriptor);
-        }
+    for (let i = 1; i <= numberImage; i++) {
+        const img = await faceapi.fetchImage(
+            `./datas/Ohtani/${i}.jpeg`
+        );
+        const detection = await faceapi
+            .detectSingleFace(img)
+            .withFaceLandmarks()
+            .withFaceDescriptor();
+        descriptions.push(detection.descriptor);
     }
     return new faceapi.LabeledFaceDescriptors(label, descriptions);
 }
