@@ -6,8 +6,12 @@
     position: absolute;
 }
 
-#canvas {
-    position: absolute;
+img {
+    width: 500px;
+}
+
+canvas {
+    position: relative;
 
 }
 
@@ -15,4 +19,3 @@ body {
     margin: 0;
     padding: 0;
 }
-

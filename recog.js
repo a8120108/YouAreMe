@@ -1,4 +1,4 @@
-function usepics(num) {
+function usepics(num, folderList) {
     const FILE_URL = "./photos";
     const MODEL_URL = "./weights";
 
@@ -16,20 +16,19 @@ function usepics(num) {
             .withFaceDescriptor();
         const displaySize = { width: input.width, height: input.height };
         // resize the overlay canvas to the input dimensions
-        const canvas = document.getElementById("myCanvas");
+        const canvas = document.getElementById(`myCanvas${num}`);
         faceapi.matchDimensions(canvas, displaySize);
         const resizedDetections = faceapi.resizeResults(result, displaySize);
-        console.log(resizedDetections);
+
 
         // Recognize Face
-        const labeledFaceDescriptors = await detectAllLabeledFaces();
+        const labeledFaceDescriptors = await detectAllLabeledFaces(folderList);
         const faceMatcher = new faceapi.FaceMatcher(labeledFaceDescriptors, 0.7);
         if (result) {
             const bestMatch = faceMatcher.findBestMatch(result.descriptor);
             const box = resizedDetections.detection.box;
             const drawBox = new faceapi.draw.DrawBox(box, { label: bestMatch.label });
             drawBox.draw(canvas);
-            console.log(result)
         }
     })();
 
@@ -53,8 +52,8 @@ function usepics(num) {
 
 
     // detect for more people
-    async function detectAllLabeledFaces() {
-        const labels = ["Ohtani", "Elon"];
+    async function detectAllLabeledFaces(folderList) {
+        const labels = folderList;
         return Promise.all(
             labels.map(async label => {
                 const descriptions = [];

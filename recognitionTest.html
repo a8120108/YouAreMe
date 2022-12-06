@@ -10,29 +10,86 @@
 
     <!-- <script src="recog.js"></script> -->
     <script>
+        var folderList = [];
+        async function loadImage() {
 
-        function loadImage(target) {
-            var fileList = target.files;
-            var fileCount = fileList.length;
+
             for (var ig = 0; ig < fileCount; ig++) {
 
                 var reader = new FileReader(); //ここはのこす
                 reader.onload = (function (e) { //ここはのこす
-                    
-                    document.getElementById("image").innerHTML += `<img id = 'myImg${ig}' src = '${e.target.result}'>` 
+
+                    document.getElementById("image").innerHTML += `<img id = 'myImg${ig}' src = '${e.target.result}'>`
                     // document.getElementById(`myImg${i}`).setAttribute('src', e.target.result); //ここはのこす
-                    console.log(e)
-                    console.log(ig)
+                    console.log(e.target.result)
 
                 });
                 reader.readAsDataURL(target.files[ig]); //ここはのこす
 
 
                 console.log("last is" + ig)
-                // usepics(ig); //ここはのこす
-            }
-        };
+                usepics(ig); //ここはのこす
+                // }
+            };
+        }
 
+        function previewFiles() {
+            var counter = 0;
+
+            var preview = document.querySelector('#image');
+            var files = document.getElementById('inputImg').files;
+
+            function readAndPreview(file) {
+                // `file.name` が拡張子の基準と一致していることを確認します。
+                if (/\.(jpe?g|png|gif)$/i.test(file.name)) {
+                    var reader = new FileReader();
+
+                    reader.addEventListener("load", async function () {
+                        var image = new Image();
+                        image.title = file.name;
+                        image.id = `myImg${counter}`
+                        image.src = this.result;
+                        preview.appendChild(image);
+
+                        document.getElementById("canvas").innerHTML += `<canvas id = "myCanvas${counter}"></canvas>`
+
+                        usepics(counter, folderList); //ここはのこす
+                        counter++;
+                    }, false);
+
+                    reader.readAsDataURL(file);
+
+                }
+
+            }
+
+            if (files) {
+                [].forEach.call(files, readAndPreview);
+
+            }
+
+        }
+
+        function fileListDilectory(files) {
+            // var 表示内容 = "";
+            for (i = 0; i < files.length; i++) {
+                var file = files[i];
+                // console.log(file.name)
+                if (file.name === ".DS_Store") {
+                    var path = file.webkitRelativePath;
+                    path = path.replace("datas", "")
+                    path = path.replace(".DS_Store", "")
+                    for (var j = 0; j < 2; j++) {
+                        path = path.replace("/", "")
+                    }
+                    if (path != "") {
+                        folderList.push(path)
+                    }
+                }
+                document.getElementById("inputImg").disabled = false;
+            }
+
+        }
     </script>
 
 </head>
@@ -42,9 +99,10 @@
         <h1>画像読み込み</h1>
         <!-- <img id="myImg" src="./photos/Elon.jpeg" width="90%" height="60%" /> --><br>
 
-
-        <input type="file" id="inputImg" accept=".jpeg,.png,.JPEG,.PNG" onchange="loadImage(this)"
-            onclick="this.value = '';" multiple="multiple"><br>
+        <label>学習元フォルダ選択: </label><input type="file" webkitdirectory directory
+            onChange="fileListDilectory(this.files)"><br>
+        <label>人物写真: </label><input type="file" id="inputImg" accept=".jpeg,.png,.JPEG,.PNG" onchange="previewFiles()"
+            multiple disabled><br>
 
         <hr>
     </span>
@@ -53,7 +111,7 @@
             <!-- <img id="myImg" src=""> -->
         </div>
         <div id="canvas">
-            <canvas id="myCanvas"></canvas>
+            <!-- <canvas id="myCanvas"></canvas> -->
         </div>
     </div>
 </body>
