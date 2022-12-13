@@ -82,19 +82,30 @@ function usepics(num, folderList) {
             })
         );
     }
-
-    async function imageToVector(blob, inputSize = 512) {
-
-        var scoreThreshold = 0.8;
-        const OPTION = new faceapi.SsdMobilenetv1Options({
-            inputSize,
-            scoreThreshold,
-        });
-
-        let fullDesc = await faceapi.detectAllFaces(blob, OPTION)
-            .withFaceLandmarks()
-            .withFaceDescriptors();
-        
-        return fullDesc;
-    }
+    
 };
+
+async function imageToVector(blob, inputSize = 512) {
+
+    var scoreThreshold = 0.8;
+    const OPTION = new faceapi.SsdMobilenetv1Options({
+        inputSize,
+        scoreThreshold,
+    });
+
+    let fullDesc = await faceapi.detectAllFaces(blob, OPTION)
+        .withFaceLandmarks()
+        .withFaceDescriptors();
+
+    return fullDesc;
+}
+
+async function vectorvector(image) {
+    const MODEL_URL = "./weights";
+    await faceapi.nets.ssdMobilenetv1.loadFromUri(MODEL_URL);
+    await faceapi.nets.faceRecognitionNet.loadFromUri(MODEL_URL);
+    await faceapi.nets.faceLandmark68Net.loadFromUri(MODEL_URL);
+
+    const answer = await imageToVector(image)
+    console.log(answer[0].descriptor)
+}

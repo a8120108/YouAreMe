@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="recog.css">
+    <script type="text/javascript" src="lib/face-api.js"></script>
+    <script type="text/javascript" src="lib/jquery.min.js"></script>
+    <script src="recog.js"></script>
+
+    <script>
+        var folderList = [];
+        function previewFiles() {
+            var counter = 0;
+
+            var preview = document.querySelector('#image');
+            var files = document.getElementById('inputImg').files;
+
+            function readAndPreview(file) {
+                // `file.name` が拡張子の基準と一致していることを確認します。
+                if (/\.(jpe?g|png|gif)$/i.test(file.name)) {
+                    var reader = new FileReader();
+
+                    reader.addEventListener("load", async function () {
+                        var image = new Image();
+                        image.title = file.name;
+                        image.id = `myImg${counter}`
+                        image.src = this.result;
+                        preview.appendChild(image);
+
+                        document.getElementById("canvas").innerHTML += `<canvas id = "myCanvas${counter}"></canvas>`
+                        counter++;
+                    }, false);
+
+                    reader.readAsDataURL(file);
+
+                }
+
+            }
+
+            if (files) {
+                [].forEach.call(files, readAndPreview);
+            }
+        }
+
+        async function imagess() {
+            var images = document.querySelectorAll("img")
+            for (var i = 0; i < images.length; i++) {
+                var image = images[i]
+                var name = document.getElementById(`${image.attributes[1].nodeValue}`);
+                vectorvector(name)
+            }
+        }
+
+    </script>
+
+</head>
+
+<body>
+    <span id="main" style="display:absolute">
+        <h1>ベクトル取得テスト</h1><br>
+
+        <label>人物写真: </label><input type="file" id="inputImg" accept=".jpeg,.png,.JPEG,.PNG" onchange="previewFiles()"
+            multiple><br>
+        <button onclick="imagess()">ボタン！！！</button>
+        <hr>
+    </span>
+    <div id="images">
+        <div id="image">
+        </div>
+        <div id="canvas">
+        </div>
+    </div>
+</body>
+
+</html>
