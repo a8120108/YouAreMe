@@ -10,25 +10,31 @@ function usepics(num, folderList) {
 
         // Detect Face
         const input = document.getElementById(`myImg${num}`);
+        const analyse = await imageToVector(input);
+        console.log(analyse)
+        console.log(analyse[0].descriptor)
+        
         const result = await faceapi
-            .detectSingleFace(input, new faceapi.SsdMobilenetv1Options())
+            .detectAllFaces(input, new faceapi.SsdMobilenetv1Options())
             .withFaceLandmarks()
-            .withFaceDescriptor();
+            .withFaceDescriptors();
         const displaySize = { width: input.width, height: input.height };
         // resize the overlay canvas to the input dimensions
         const canvas = document.getElementById(`myCanvas${num}`);
         faceapi.matchDimensions(canvas, displaySize);
-        const resizedDetections = faceapi.resizeResults(result, displaySize);
+        for (var i = 0; i < result.length; i++) {
+            const resizedDetections = faceapi.resizeResults(result[i], displaySize);
 
 
-        // Recognize Face
-        const labeledFaceDescriptors = await detectAllLabeledFaces(folderList);
-        const faceMatcher = new faceapi.FaceMatcher(labeledFaceDescriptors, 0.7);
-        if (result) {
-            const bestMatch = faceMatcher.findBestMatch(result.descriptor);
-            const box = resizedDetections.detection.box;
-            const drawBox = new faceapi.draw.DrawBox(box, { label: bestMatch.label });
-            drawBox.draw(canvas);
+            // Recognize Face
+            const labeledFaceDescriptors = await detectAllLabeledFaces(folderList);
+            const faceMatcher = new faceapi.FaceMatcher(labeledFaceDescriptors, 0.7);
+            if (result[i]) {
+                const bestMatch = faceMatcher.findBestMatch(result[i].descriptor);
+                const box = resizedDetections.detection.box;
+                const drawBox = new faceapi.draw.DrawBox(box, { label: bestMatch.label });
+                drawBox.draw(canvas);
+            }
         }
     })();
 
@@ -77,4 +83,18 @@ function usepics(num, folderList) {
         );
     }
 
+    async function imageToVector(blob, inputSize = 512) {
+
+        var scoreThreshold = 0.8;
+        const OPTION = new faceapi.SsdMobilenetv1Options({
+            inputSize,
+            scoreThreshold,
+        });
+
+        let fullDesc = await faceapi.detectAllFaces(blob, OPTION)
+            .withFaceLandmarks()
+            .withFaceDescriptors();
+        
+        return fullDesc;
+    }
 };

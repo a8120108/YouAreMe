@@ -8,31 +8,8 @@
     <script type="text/javascript" src="lib/jquery.min.js"></script>
     <script src="recog.js"></script>
 
-    <!-- <script src="recog.js"></script> -->
     <script>
         var folderList = [];
-        async function loadImage() {
-
-
-            for (var ig = 0; ig < fileCount; ig++) {
-
-                var reader = new FileReader(); //ここはのこす
-                reader.onload = (function (e) { //ここはのこす
-
-                    document.getElementById("image").innerHTML += `<img id = 'myImg${ig}' src = '${e.target.result}'>`
-                    // document.getElementById(`myImg${i}`).setAttribute('src', e.target.result); //ここはのこす
-                    console.log(e.target.result)
-
-                });
-                reader.readAsDataURL(target.files[ig]); //ここはのこす
-
-
-                console.log("last is" + ig)
-                usepics(ig); //ここはのこす
-                // }
-            };
-        }
-
         function previewFiles() {
             var counter = 0;
 
@@ -65,7 +42,6 @@
 
             if (files) {
                 [].forEach.call(files, readAndPreview);
-
             }
 
         }
@@ -90,15 +66,14 @@
             }
 
         }
+
     </script>
 
 </head>
 
 <body>
     <span id="main" style="display:absolute">
-        <h1>画像読み込み</h1>
-        <!-- <img id="myImg" src="./photos/Elon.jpeg" width="90%" height="60%" /> --><br>
-
+        <h1>画像読み込み</h1><br>
         <label>学習元フォルダ選択: </label><input type="file" webkitdirectory directory
             onChange="fileListDilectory(this.files)"><br>
         <label>人物写真: </label><input type="file" id="inputImg" accept=".jpeg,.png,.JPEG,.PNG" onchange="previewFiles()"
@@ -108,10 +83,8 @@
     </span>
     <div id="images">
         <div id="image">
-            <!-- <img id="myImg" src=""> -->
         </div>
         <div id="canvas">
-            <!-- <canvas id="myCanvas"></canvas> -->
         </div>
     </div>
 </body>
