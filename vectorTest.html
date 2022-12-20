@@ -45,11 +45,15 @@
 
         async function imagess() {
             var images = document.querySelectorAll("img")
+            var names = [];
             for (var i = 0; i < images.length; i++) {
                 var image = images[i]
-                var name = document.getElementById(`${image.attributes[1].nodeValue}`);
-                vectorvector(name)
+                var name =document.getElementById(`${image.attributes[1].nodeValue}`);
+                var hoge = `<img title = "${image.attributes[0].nodeValue}" id = "${image.attributes[1].nodeValue}" src = "${image.currentSrc}">`
+
+                names.push(name)
             }
+            receiveAndRun(names)
         }
 
     </script>

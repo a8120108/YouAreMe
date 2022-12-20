@@ -13,7 +13,7 @@ function usepics(num, folderList) {
         const analyse = await imageToVector(input);
         console.log(analyse)
         console.log(analyse[0].descriptor)
-        
+
         const result = await faceapi
             .detectAllFaces(input, new faceapi.SsdMobilenetv1Options())
             .withFaceLandmarks()
@@ -68,7 +68,7 @@ function usepics(num, folderList) {
                 for (let i = 1; i <= 2; i++) {
                     const img = await faceapi.fetchImage(
                         `./datas/${label}/${i}.jpeg`
-                    
+
                     );
 
 
@@ -82,7 +82,7 @@ function usepics(num, folderList) {
             })
         );
     }
-    
+
 };
 
 async function imageToVector(blob, inputSize = 512) {
@@ -100,12 +100,94 @@ async function imageToVector(blob, inputSize = 512) {
     return fullDesc;
 }
 
-async function vectorvector(image) {
+async function make128Dvectors(image) {
     const MODEL_URL = "./weights";
     await faceapi.nets.ssdMobilenetv1.loadFromUri(MODEL_URL);
     await faceapi.nets.faceRecognitionNet.loadFromUri(MODEL_URL);
     await faceapi.nets.faceLandmark68Net.loadFromUri(MODEL_URL);
 
     const answer = await imageToVector(image)
-    console.log(answer[0].descriptor)
+
+    for (var i = 0; i < 128; i++) {
+        // console.log(answer[0].descriptor[i])
+
+    }
+    console.log("----------------")
+    return answer[0].descriptor;
+    // console.log(answer[0].descriptor)
+}
+
+
+async function receiveAndRun(names) {
+    var vector;
+    var vectors = [];
+    for (var i = 0; i < names.length; i++) {
+        var name = names[i]
+        vector = await make128Dvectors(name);
+        vectors.push(vector);
+
+        if (i == names.length - 1) {
+            var sum = 0;
+            var cosum = 0;
+            var first = 0;
+            var second = 0;
+
+
+
+
+
+
+
+
+
+
+
+
+            //処理部分
+            
+            for (var j = 0; j < 128; j++) {
+                //euclidean
+                sum += (vectors[0][j] - vectors[1][j]) ** 2
+
+                //cosSim
+                cosum += vectors[0][j] * vectors[1][j]
+                first += vectors[0][j] ** 2
+                second += vectors[1][j] ** 2
+            }
+            first = Math.sqrt(first)
+            second = Math.sqrt(second)
+            sum = Math.sqrt(sum)
+
+
+
+
+
+
+
+
+
+
+
+
+
+                //consum
+            var answer = cosum / (first * second);
+
+            if (answer > 0.948 && sum < 0.575) {
+                console.log("ｵﾅｼﾞﾋﾄﾀﾞﾖｰ!‼︎")
+                console.log("cosSimilarity = " + answer)
+                console.log("euclideanDistance = " + sum)
+            } else if (answer > 0.948) {
+                console.log("cosはヨシ！")
+                console.log("euclideanDistance = " + sum)
+            } else if (sum < 0.575) {
+                console.log("euclidはヨシ！")
+                console.log("cosSimilarity = " + answer)
+            } else {
+                console.log("誰だよこいつら")
+                console.log("cosSimilarity = " + answer)
+                console.log("euclideanDistance = " + sum)
+            }
+        }
+    }
 }
