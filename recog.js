@@ -132,19 +132,8 @@ async function receiveAndRun(names) {
             var first = 0;
             var second = 0;
 
-
-
-
-
-
-
-
-
-
-
-
             //処理部分
-            
+
             for (var j = 0; j < 128; j++) {
                 //euclidean
                 sum += (vectors[0][j] - vectors[1][j]) ** 2
@@ -159,18 +148,7 @@ async function receiveAndRun(names) {
             sum = Math.sqrt(sum)
 
 
-
-
-
-
-
-
-
-
-
-
-
-                //consum
+            //cosum
             var answer = cosum / (first * second);
 
             if (answer > 0.948 && sum < 0.575) {
@@ -180,14 +158,18 @@ async function receiveAndRun(names) {
             } else if (answer > 0.948) {
                 console.log("cosはヨシ！")
                 console.log("euclideanDistance = " + sum)
+                console.log("一致しないみたいです。")
             } else if (sum < 0.575) {
                 console.log("euclidはヨシ！")
                 console.log("cosSimilarity = " + answer)
+                console.log("一致しないみたいです。")
             } else {
-                console.log("誰だよこいつら")
                 console.log("cosSimilarity = " + answer)
                 console.log("euclideanDistance = " + sum)
+                console.log("一致しないみたいです。")
+                console.log(vectors)
             }
+
         }
     }
 }
